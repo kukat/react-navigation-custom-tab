@@ -5,11 +5,13 @@
  * @format
  */
 
+import BarcodeScanning from '@react-native-ml-kit/barcode-scanning';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import React from 'react';
-import {Button, StyleSheet, Text, View} from 'react-native';
+import React, {useCallback} from 'react';
+import {Alert, Button, StyleSheet, Text, View} from 'react-native';
+import {ImageLibraryOptions, launchImageLibrary} from 'react-native-image-picker';
 import {MyTabBar} from './MyTabBar';
 
 function HomeScreen({navigation}) {
@@ -54,9 +56,30 @@ const DummyScreen = () => (
 );
 
 const ScanScreen = () => {
+  const scanImage = useCallback(async (imageUri: string) => {
+    console.log(`scanning image: ${imageUri}`);
+    const barcodes = await BarcodeScanning.scan(imageUri);
+    barcodes?.map(barcode => {
+      console.log(`barcode: ${barcode.format} value: ${barcode.value}`);
+      Alert.alert('Scanner', `barcode: ${barcode.format} value: ${barcode.value}`);
+    });
+  }, []);
+
+  const pickImage = useCallback(async () => {
+    const imageOptions: ImageLibraryOptions = {
+      mediaType: 'photo',
+      selectionLimit: 1,
+    };
+    const result = await launchImageLibrary(imageOptions);
+    const imageUri = result.assets?.[0].uri;
+    console.log(`picked image: ${imageUri}`);
+    imageUri && (await scanImage(imageUri));
+  }, [scanImage]);
+
   return (
     <View style={styles.view}>
       <Text>Scan!</Text>
+      <Button title="Pick photo" onPress={pickImage} />
     </View>
   );
 };
