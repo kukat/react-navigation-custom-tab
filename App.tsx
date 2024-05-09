@@ -32,13 +32,6 @@ function ExploreScreen() {
     </View>
   );
 }
-function ScanScreen() {
-  return (
-    <View style={styles.view}>
-      <Text>Scan!</Text>
-    </View>
-  );
-}
 function RewardsScreen() {
   return (
     <View style={styles.view}>
@@ -53,6 +46,21 @@ function ProfileScreen() {
     </View>
   );
 }
+
+const DummyScreen = () => (
+  <View>
+    <Text>Dummy screen!</Text>
+  </View>
+);
+
+const ScanScreen = () => {
+  return (
+    <View style={styles.view}>
+      <Text>Scan!</Text>
+    </View>
+  );
+};
+
 const PopupScreen = () => {
   return (
     // eslint-disable-next-line react-native/no-inline-styles
@@ -69,7 +77,7 @@ const TabNavigator = () => {
     <Tab.Navigator tabBar={props => <MyTabBar {...props} />}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Explore" component={ExploreScreen} options={{tabBarBadge: 3}} />
-      <Tab.Screen name="Scan" component={ScanScreen} />
+      <Tab.Screen name="Scan" component={DummyScreen} />
       <Tab.Screen name="Rewards" component={RewardsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
@@ -83,7 +91,10 @@ function App(): React.JSX.Element {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Tab" component={TabNavigator} options={{headerShown: false}} />
-        <Stack.Screen name="Popup" component={PopupScreen} options={{presentation: 'modal'}} />
+        <Stack.Group screenOptions={{presentation: 'modal'}}>
+          <Stack.Screen name="Popup" component={PopupScreen} />
+          <Stack.Screen name="Scanner" component={ScanScreen} />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );
